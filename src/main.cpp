@@ -1,9 +1,15 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
+#include <GLM/glm/glm/glm.hpp>
+#include <GLM/glm/glm/gtc/matrix_transform.hpp>
+#include <GLM/glm/glm/gtc/type_ptr.hpp>
+#include "shader.h"
 GLFWwindow* window;
-#include <shader.h>
+
 using namespace std; 
+using namespace glm;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -35,6 +41,11 @@ int main( void )
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        fprintf(stderr, "Failed to initialize GLAD\n");
+        glfwTerminate();
+        return -1;
+    }
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -56,9 +67,11 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-    
+
+    // load our shaders
+    GLuint programID = LoadShaders("src/myVertexShader.txt", "src/myFragmentShader.txt");
 	do{
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // enable the first vertex array we created a few lines ago
         glEnableVertexAttribArray(0);
@@ -72,7 +85,7 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
         0,                  
         (void*)0           
         );
-
+    glUseProgram(programID);
         // Draw the triangle 
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         // disable the first vertex array we created a few lines ago
