@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 GLFWwindow* window;
-
+#include <shader.h>
 using namespace std; 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -56,7 +56,7 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
+    
 	do{
         glClear( GL_COLOR_BUFFER_BIT );
 

@@ -1,0 +1,11 @@
+#version 330 core
+// vec3 is a vector of 3 components, we are using 3 components in c++ so they need to be equal
+// layout(location=0) has to be equal to the vertexPosition_modelspace first attribute, the value is irelevent 
+// vertexPosition_modelspace will store the position of the vertex each time the shaders run
+// in is input data
+layout(location=0) in vec3 vertexPosition_modelspace;
+
+void main(){
+    gl_Position.xyz = vertexPosition_modelspace;
+    gl_Position.w=1.0;
+}
