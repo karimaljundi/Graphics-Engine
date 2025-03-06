@@ -74,9 +74,7 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
     GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 
-    glm::mat4 myMatrix;
-    glm::vec4 myVector;
-    glm::vec4 transformedVector = myMatrix * myVector;
+  
 
     // create a projection matrix this just means you get one perspective of the shape since its still just static shape
         glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
@@ -89,7 +87,18 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
 
     // create model matrix (triangle, circle, etc)
     glm::mat4 Model = glm::mat4(1.0f);
+    //translate
 
+ 
+
+
+    // rotate and scale
+
+
+    glm::vec3 myRotationAxis(10,3,1);
+   Model = glm::rotate(Model, glm::radians(45.0f), myRotationAxis);
+
+  Model= glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
     // create the final modelviewprojection
     glm::mat4 MVP = Projection * View * Model; 
 	do{
