@@ -50,6 +50,7 @@ int main( void )
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 	
+    // coordinates to create a 2d triangle
     static const GLfloat g_vertex_buffer_data[] = {
    -1.0f, -1.0f, 0.0f,
    1.0f, -1.0f, 0.0f,
@@ -70,10 +71,35 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
 
     // load our shaders
     GLuint programID = LoadShaders("src/myVertexShader.txt", "src/myFragmentShader.txt");
+    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+
+
+    glm::mat4 myMatrix;
+    glm::vec4 myVector;
+    glm::vec4 transformedVector = myMatrix * myVector;
+
+    // create a projection matrix this just means you get one perspective of the shape since its still just static shape
+        glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+    // create camera matrix (used to see the objects and world)
+    glm::mat4 View = glm::lookAt(
+        glm::vec3(4,3,3),
+        glm::vec3(0,0,0),
+        glm::vec3(0,1,0)
+    );
+
+    // create model matrix (triangle, circle, etc)
+    glm::mat4 Model = glm::mat4(1.0f);
+
+    // create the final modelviewprojection
+    glm::mat4 MVP = Projection * View * Model; 
 	do{
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // enable the first vertex array we created a few lines ago
+       
+    glUseProgram(programID);
+      
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+     // enable the first vertex array we created a few lines ago
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         // giving attributes to the vertex
@@ -85,10 +111,11 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
         0,                  
         (void*)0           
         );
-    glUseProgram(programID);
-        // Draw the triangle 
+
+          // Draw the triangle 
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-        // disable the first vertex array we created a few lines ago
+
+                // disable the first vertex array we created a few lines ago
 
         glDisableVertexAttribArray(0);
 		
@@ -100,6 +127,9 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data
 	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
 		   glfwWindowShouldClose(window) == 0 );
 
+glDeleteBuffers(1, &vertexbuffer);
+glDeleteProgram(programID);
+glDeleteVertexArrays(1, &VertexArrayID);
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
 
